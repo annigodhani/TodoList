@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TodoList</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #b489e8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1,
+        h2 {
+            color: #fff4f4;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: white;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        li form {
+            display: inline;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        label {
+            flex-grow: 1
+        }
+
+        a {
+            color: #1900ff;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Your TodoList</h1>
+
+    <!-- Form to add a new task -->
+    <form action="/tasks" method="POST">
+        <label>TodoList Description:</label>
+        <input type="text" name="description" required>
+        <button type="submit">Add To</button>
+    </form>
+
+    <!-- List of all tasks -->
+    <h2>All TodoList</h2>
+    <ul>
+        <% tasks.forEach(task=> { %>
+            <li>
+                <form action="/tasks/<%= task._id %>/toggle" method="POST" style="display:inline;">
+                    <input type="checkbox" name="completed" <%=task.completed ? 'checked' : '' %>
+                    onchange="this.form.submit()">
+                    <label class="<%= task.completed ? 'completed' : '' %>">
+                        <%= task.description %>
+                    </label>
+                </form>
+                <form action="/tasks/<%= task._id %>/delete" method="POST" style="display:inline;">
+                    <button type="submit" style="background-color: #dc3545;">Delete</button>
+                </form>
+                <a href="/tasks/<%= task._id %>/edit">Edit</a>
+            </li>
+            <% }) %>
+    </ul>
+
+    <!-- List of completed tasks -->
+    <h2>Completed TodoList</h2>
+    <ul>
+        <% tasks.forEach(task=> { %>
+            <% if (task.completed) { %>
+                <li>
+                    <form action="/tasks/<%= task._id %>/toggle" method="POST" style="display:inline;">
+                        <input type="checkbox" name="completed" <%=task.completed ? 'checked' : '' %>
+                        onchange="this.form.submit()">
+                        <label class="completed">
+                            <%= task.description %>
+                        </label>
+                    </form>
+                    <form action="/tasks/<%= task._id %>/delete" method="POST" style="display:inline;">
+                        <button type="submit" style="background-color: #dc3545;">Delete</button>
+                    </form>
+                    <a href="/tasks/<%= task._id %>/edit">Edit</a>
+                </li>
+                <% } %>
+                    <% }) %>
+    </ul>
+    <a href="/auth/logout" style="font-size: large; font-weight: bold;">Logout</a>
+</body>
+
+</html>
